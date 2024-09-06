@@ -11,8 +11,17 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import type { Ai } from "@cloudflare/ai";
+
+type Env = {
+	AI: Ai;
+};
+
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
+		const res = await env.AI.run("@cf/meta/llama-3-8b-instruct", {
+			prompt: "hello, How are you?",
+		});
+		return new Response(JSON.stringify(res));
 	},
 } satisfies ExportedHandler<Env>;
